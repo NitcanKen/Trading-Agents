@@ -85,171 +85,6 @@ Or use the convenient batch file on Windows:
 ./run_gui.bat
 ```
 
-### ✨ GUI Features
-
-**📊 Interactive Analysis**
-- Easy-to-use interface for configuring and running analyses
-- Real-time progress tracking with agent status indicators
-- Professional styling with color-coded results
-- Support for all CLI features through a visual interface
-
-**🎛️ Comprehensive Configuration**
-- Model selection (o4-mini, o3, gpt-4.1, etc.)
-- Adjustable debate rounds and risk analysis parameters
-- Analyst team selection (Market, Social, News, Fundamentals)
-- Online/offline data source toggle
-
-**📈 Rich Results Display**
-- Executive summary with clear BUY/SELL/HOLD indicators
-- Detailed tabbed interface for different analysis sections
-- Color-coded bull/bear arguments and risk assessments
-- Auto-saving of results with timestamps
-
-**📚 Analysis History**
-- Complete history of all past analyses
-- Searchable and sortable analysis summary table
-- Detailed viewer for any historical analysis
-- Download capability for individual analysis files
-- Organized tabs showing all analysis components
-
-**🔄 System Management**
-- Built-in reset functionality for ChromaDB issues
-- System status indicators
-- Session state management
-- Automatic file organization
-
-### 📁 Saved Analysis Files
-
-All analyses are automatically saved in the `analyses/` folder with detailed reports including:
-- Company and analysis metadata
-- All analyst team reports (Market, Social, News, Fundamentals)
-- Research team debates (Bull vs Bear arguments)
-- Trading team recommendations
-- Risk management analysis
-- Portfolio manager final decisions
-
-For detailed GUI setup instructions, see [GUI_Setup_Guide.md](GUI_Setup_Guide.md).
-
-## Installation and CLI
-
-### Installation
-
-Clone TradingAgents:
-```bash
-git clone https://github.com/TauricResearch/TradingAgents.git
-cd TradingAgents
-```
-
-Create a virtual environment in any of your favorite environment managers:
-```bash
-conda create -n tradingagents python=3.13
-conda activate tradingagents
-```
-
-Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-### Required APIs
-
-You will also need the FinnHub API for financial data. All of our code is implemented with the free tier.
-```bash
-export FINNHUB_API_KEY=$YOUR_FINNHUB_API_KEY
-```
-
-You will need the OpenAI API for all the agents.
-```bash
-export OPENAI_API_KEY=$YOUR_OPENAI_API_KEY
-```
-
-### CLI Usage
-
-You can also try out the CLI directly by running:
-```bash
-python -m cli.main
-```
-You will see a screen where you can select your desired tickers, date, LLMs, research depth, etc.
-
-<p align="center">
-  <img src="assets/cli/cli_init.png" width="100%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-An interface will appear showing results as they load, letting you track the agent's progress as it runs.
-
-<p align="center">
-  <img src="assets/cli/cli_news.png" width="100%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-<p align="center">
-  <img src="assets/cli/cli_transaction.png" width="100%" style="display: inline-block; margin: 0 2%;">
-</p>
-
-## TradingAgents Package
-
-### Implementation Details
-
-We built TradingAgents with LangGraph to ensure flexibility and modularity. We utilize `o1-preview` and `gpt-4o` as our deep thinking and fast thinking LLMs for our experiments. However, for testing purposes, we recommend you use `o4-mini` and `gpt-4.1-mini` to save on costs as our framework makes **lots of** API calls.
-
-### Python Usage
-
-To use TradingAgents inside your code, you can import the `tradingagents` module and initialize a `TradingAgentsGraph()` object. The `.propagate()` function will return a decision. You can run `main.py`, here's also a quick example:
-
-```python
-from tradingagents.graph.trading_graph import TradingAgentsGraph
-
-ta = TradingAgentsGraph(debug=True, config=config)
-
-# forward propagate
-_, decision = ta.propagate("NVDA", "2024-05-10")
-print(decision)
-```
-
-You can also adjust the default configuration to set your own choice of LLMs, debate rounds, etc.
-
-```python
-from tradingagents.graph.trading_graph import TradingAgentsGraph
-from tradingagents.default_config import DEFAULT_CONFIG
-
-# Create a custom config
-config = DEFAULT_CONFIG.copy()
-config["deep_think_llm"] = "gpt-4.1-nano"  # Use a different model
-config["quick_think_llm"] = "gpt-4.1-nano"  # Use a different model
-config["max_debate_rounds"] = 1  # Increase debate rounds
-config["online_tools"] = True # Use online tools or cached data
-
-# Initialize with custom config
-ta = TradingAgentsGraph(debug=True, config=config)
-
-# forward propagate
-_, decision = ta.propagate("NVDA", "2024-05-10")
-print(decision)
-```
-
-> For `online_tools`, we recommend enabling them for experimentation, as they provide access to real-time data. The agents' offline tools rely on cached data from our **Tauric TradingDB**, a curated dataset we use for backtesting. We're currently in the process of refining this dataset, and we plan to release it soon alongside our upcoming projects. Stay tuned!
-
-You can view the full list of configurations in `tradingagents/default_config.py`.
-
-## Contributing
-
-We welcome contributions from the community! Whether it's fixing a bug, improving documentation, or suggesting a new feature, your input helps make this project better. If you are interested in this line of research, please consider joining our open-source financial AI research community [Tauric Research](https://tauric.ai/).
-
-## Citation
-
-Please reference our work if you find *TradingAgents* provides you with some help :)
-
-```
-@misc{xiao2025tradingagentsmultiagentsllmfinancial,
-      title={TradingAgents: Multi-Agents LLM Financial Trading Framework}, 
-      author={Yijia Xiao and Edward Sun and Di Luo and Wei Wang},
-      year={2025},
-      eprint={2412.20138},
-      archivePrefix={arXiv},
-      primaryClass={q-fin.TR},
-      url={https://arxiv.org/abs/2412.20138}, 
-}
-```
-
 ---
 
 # 🚀 TradingAgents Quick Start Guide
@@ -269,7 +104,7 @@ Get started with TradingAgents in under 5 minutes! This guide covers both CLI an
 
 ```bash
 # Clone the repository
-git clone https://github.com/TauricResearch/TradingAgents.git
+git clone https://github.com/NitcanKen/Trading-Agents
 cd TradingAgents
 
 # Create virtual environment
@@ -311,20 +146,6 @@ Or on Windows:
 - ✅ **Complete analysis history** with search and download
 - ✅ **Reset functionality** for ChromaDB issues
 - ✅ **Professional styling** with organized tabs
-
-## 💻 CLI Interface
-
-### Start CLI
-```bash
-python -m cli.main
-```
-
-### Quick CLI Steps
-1. **Select ticker** from the list or enter custom
-2. **Choose date** for analysis
-3. **Configure** LLMs and parameters
-4. **Watch** agents work in real-time
-5. **Review** results in terminal
 
 ## 📊 Understanding Results
 
@@ -407,14 +228,6 @@ analyses/
 - **Analysts**: All analysts
 - **Debate Rounds**: 5
 - **Risk Rounds**: 3
-
-## 📚 Next Steps
-
-1. **Explore History** → Use GUI History tab to review patterns
-2. **Try Different Tickers** → Compare analyses across sectors
-3. **Experiment with Models** → Test different LLM combinations
-4. **Review Documentation** → Check sections below for detailed guides
-5. **Join Community** → [Discord](https://discord.com/invite/hk9PGKShPK) | [GitHub](https://github.com/TauricResearch/)
 
 ---
 
@@ -910,4 +723,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Happy Trading! 📈**
 
-> **Disclaimer**: TradingAgents is for research purposes. Past performance does not guarantee future results. Not financial advice.
+> **Disclaimer**: The GUI and system architecture is from TradingAgents.
