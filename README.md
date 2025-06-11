@@ -86,35 +86,6 @@ Or use the convenient batch file on Windows:
 ```
 
 ---
-
-# 🚀 TradingAgents Quick Start Guide
-
-Get started with TradingAgents in under 5 minutes! This guide covers both CLI and GUI interfaces.
-
-## ⚡ Prerequisites
-
-1. **Python 3.10+** installed
-2. **API Keys** ready:
-   ```bash
-   export OPENAI_API_KEY="your_openai_api_key"
-   export FINNHUB_API_KEY="your_finnhub_api_key"
-   ```
-
-## 📦 Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/NitcanKen/Trading-Agents
-cd TradingAgents
-
-# Create virtual environment
-conda create -n tradingagents python=3.13
-conda activate tradingagents
-
-# Install dependencies
-pip install -r requirements.txt
-```
----
 # 🚀 TradingAgents GUI Setup Guide
 
 This guide will help you set up and run the beautiful Streamlit GUI for TradingAgents.
