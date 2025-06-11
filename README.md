@@ -376,48 +376,6 @@ TradingAgents/
 └── ... (existing files)
 ```
 
-## 🚀 Advanced GUI Usage
-
-### Custom Model Configuration
-You can easily switch between your available models:
-- **Deep Thinking Models**: For complex analysis (gpt-4.1, o3, o4-mini)
-- **Quick Thinking Models**: For rapid tool calls (gpt-4o-mini, gpt-4.1-nano)
-
-### Analysis Customization
-- **Minimal Analysis**: Select only Market Analyst, 1 debate round
-- **Comprehensive Analysis**: Select all analysts, 3-5 debate rounds
-- **Risk-Focused Analysis**: Include all risk analysts, increase risk rounds
-
-### History Management
-- **View Trends**: Compare decisions across time periods
-- **Export Data**: Download specific analyses for external tools
-- **Portfolio Review**: Track your analysis history for portfolio insights
-- **Research**: Use historical data for backtesting strategies
-
-### Batch Processing
-For multiple analyses, you can:
-1. Run one analysis and save results
-2. Use the History tab to review
-3. Switch back to New Analysis tab
-4. Change ticker symbol and run another analysis
-5. All results are automatically timestamped and organized
-
-**Pro Tips:**
-- Save your favorite configuration settings by noting them down
-- Use meaningful ticker symbols and check the analysis dates
-- Review all tabs for comprehensive insights
-- Use the History tab to track patterns in your trading decisions
-- Download analysis files for external tools or sharing
-- Use the Reset button if you encounter ChromaDB issues
-- Check the `analyses` folder for all saved reports
-
-**New History Features:**
-- 📊 **Quick Overview**: See all your analyses at a glance in the summary table
-- 🔍 **Deep Dive**: Select any analysis for detailed review with organized tabs
-- 📥 **Export**: Download any analysis file for external use
-- 📈 **Track Performance**: Monitor your trading decision patterns over time
-- 🔄 **Easy Navigation**: Switch seamlessly between new analysis and history review
-
 ---
 
 # ChromaDB Reset Solution
@@ -553,13 +511,6 @@ cleanup_persistent_chromadb()
 - `tradingagents/graph/trading_graph.py` - Added reset functionality
 - `streamlit_app.py` - Added reset button and UI improvements
 - `test_reset_functionality.py` - Added comprehensive testing
-
-## Future Improvements
-
-- [ ] Automatic reset on error detection
-- [ ] Configuration option to choose between in-memory and persistent storage
-- [ ] Background cleanup of temporary files
-- [ ] Integration with application logging for better diagnostics
 
 ---
 
