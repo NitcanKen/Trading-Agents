@@ -98,6 +98,53 @@ class TradingAgentsGraph:
         # Set up the graph
         self.graph = self.graph_setup.setup_graph(selected_analysts)
 
+    def reset(self):
+        """Reset all ChromaDB memories and clear internal state"""
+        try:
+            # Reset all memory instances
+            if hasattr(self, 'bull_memory') and self.bull_memory:
+                self.bull_memory.reset()
+            if hasattr(self, 'bear_memory') and self.bear_memory:
+                self.bear_memory.reset()
+            if hasattr(self, 'trader_memory') and self.trader_memory:
+                self.trader_memory.reset()
+            if hasattr(self, 'invest_judge_memory') and self.invest_judge_memory:
+                self.invest_judge_memory.reset()
+            if hasattr(self, 'risk_manager_memory') and self.risk_manager_memory:
+                self.risk_manager_memory.reset()
+            
+            # Clear internal state
+            self.curr_state = None
+            self.ticker = None
+            self.log_states_dict = {}
+            
+        except Exception as e:
+            # If reset fails, reinitialize memories completely
+            self.bull_memory = FinancialSituationMemory("bull_memory")
+            self.bear_memory = FinancialSituationMemory("bear_memory")
+            self.trader_memory = FinancialSituationMemory("trader_memory")
+            self.invest_judge_memory = FinancialSituationMemory("invest_judge_memory")
+            self.risk_manager_memory = FinancialSituationMemory("risk_manager_memory")
+            
+            # Update graph setup with new memories
+            self.graph_setup = GraphSetup(
+                self.quick_thinking_llm,
+                self.deep_thinking_llm,
+                self.toolkit,
+                self.tool_nodes,
+                self.bull_memory,
+                self.bear_memory,
+                self.trader_memory,
+                self.invest_judge_memory,
+                self.risk_manager_memory,
+                self.conditional_logic,
+            )
+            
+            # Clear internal state
+            self.curr_state = None
+            self.ticker = None
+            self.log_states_dict = {}
+
     def _create_tool_nodes(self) -> Dict[str, ToolNode]:
         """Create tool nodes for different data sources."""
         return {

@@ -21,7 +21,7 @@
 
 <div align="center">
 
-🚀 [TradingAgents](#tradingagents-framework) | ⚡ [Installation & CLI](#installation-and-cli) | 🎬 [Demo](https://www.youtube.com/watch?v=90gr5lwjIho) | 📦 [Package Usage](#tradingagents-package) | 🤝 [Contributing](#contributing) | 📄 [Citation](#citation)
+🚀 [Quick Start](QUICK_START.md) | 📚 [TradingAgents](#tradingagents-framework) | ⚡ [Installation & CLI](#installation-and-cli) | 🖥️ [GUI Interface](#gui-interface) | 🎬 [Demo](https://www.youtube.com/watch?v=90gr5lwjIho) | 📦 [Package Usage](#tradingagents-package) | 🤝 [Contributing](#contributing) | 📄 [Citation](#citation)
 
 </div>
 
@@ -68,6 +68,67 @@ Our framework decomposes complex trading tasks into specialized roles. This ensu
 <p align="center">
   <img src="assets/trader.png" width="70%" style="display: inline-block; margin: 0 2%;">
 </p>
+
+## GUI Interface
+
+TradingAgents now includes a beautiful, professional Streamlit-based web interface that makes it easy to run analyses and review results without command-line expertise.
+
+### 🚀 Quick Start - GUI
+
+Run the GUI with a single command:
+```bash
+streamlit run streamlit_app.py
+```
+
+Or use the convenient batch file on Windows:
+```bash
+./run_gui.bat
+```
+
+### ✨ GUI Features
+
+**📊 Interactive Analysis**
+- Easy-to-use interface for configuring and running analyses
+- Real-time progress tracking with agent status indicators
+- Professional styling with color-coded results
+- Support for all CLI features through a visual interface
+
+**🎛️ Comprehensive Configuration**
+- Model selection (o4-mini, o3, gpt-4.1, etc.)
+- Adjustable debate rounds and risk analysis parameters
+- Analyst team selection (Market, Social, News, Fundamentals)
+- Online/offline data source toggle
+
+**📈 Rich Results Display**
+- Executive summary with clear BUY/SELL/HOLD indicators
+- Detailed tabbed interface for different analysis sections
+- Color-coded bull/bear arguments and risk assessments
+- Auto-saving of results with timestamps
+
+**📚 Analysis History**
+- Complete history of all past analyses
+- Searchable and sortable analysis summary table
+- Detailed viewer for any historical analysis
+- Download capability for individual analysis files
+- Organized tabs showing all analysis components
+
+**🔄 System Management**
+- Built-in reset functionality for ChromaDB issues
+- System status indicators
+- Session state management
+- Automatic file organization
+
+### 📁 Saved Analysis Files
+
+All analyses are automatically saved in the `analyses/` folder with detailed reports including:
+- Company and analysis metadata
+- All analyst team reports (Market, Social, News, Fundamentals)
+- Research team debates (Bull vs Bear arguments)
+- Trading team recommendations
+- Risk management analysis
+- Portfolio manager final decisions
+
+For detailed GUI setup instructions, see [GUI_Setup_Guide.md](GUI_Setup_Guide.md).
 
 ## Installation and CLI
 
