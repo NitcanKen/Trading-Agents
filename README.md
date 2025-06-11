@@ -249,3 +249,665 @@ Please reference our work if you find *TradingAgents* provides you with some hel
       url={https://arxiv.org/abs/2412.20138}, 
 }
 ```
+
+---
+
+# 🚀 TradingAgents Quick Start Guide
+
+Get started with TradingAgents in under 5 minutes! This guide covers both CLI and GUI interfaces.
+
+## ⚡ Prerequisites
+
+1. **Python 3.10+** installed
+2. **API Keys** ready:
+   ```bash
+   export OPENAI_API_KEY="your_openai_api_key"
+   export FINNHUB_API_KEY="your_finnhub_api_key"
+   ```
+
+## 📦 Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/TauricResearch/TradingAgents.git
+cd TradingAgents
+
+# Create virtual environment
+conda create -n tradingagents python=3.13
+conda activate tradingagents
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+## 🖥️ GUI Interface (Recommended)
+
+### Start the GUI
+```bash
+streamlit run streamlit_app.py
+```
+Or on Windows:
+```bash
+./run_gui.bat
+```
+
+### Quick Analysis Steps
+1. **Open browser** → `http://localhost:8501`
+2. **Configure** (sidebar):
+   - Select models (e.g., o4-mini, gpt-4o-mini)
+   - Choose analysts (Market, Social, News, Fundamentals)
+   - Set debate rounds (1-5)
+3. **Analyze** (New Analysis tab):
+   - Enter ticker (e.g., `AAPL`)
+   - Select date
+   - Click `🚀 Run Analysis`
+4. **Review Results** → 5 organized tabs with detailed insights
+5. **View History** → History tab shows all past analyses
+
+### Key GUI Features
+- ✅ **Two-tab interface**: New Analysis + History
+- ✅ **Real-time progress tracking**
+- ✅ **Color-coded results** (🟢 BUY, 🔴 SELL, 🟡 HOLD)
+- ✅ **Complete analysis history** with search and download
+- ✅ **Reset functionality** for ChromaDB issues
+- ✅ **Professional styling** with organized tabs
+
+## 💻 CLI Interface
+
+### Start CLI
+```bash
+python -m cli.main
+```
+
+### Quick CLI Steps
+1. **Select ticker** from the list or enter custom
+2. **Choose date** for analysis
+3. **Configure** LLMs and parameters
+4. **Watch** agents work in real-time
+5. **Review** results in terminal
+
+## 📊 Understanding Results
+
+### Analysis Components
+1. **📈 Analyst Team Reports**
+   - Market Analysis (technical indicators)
+   - Social Sentiment (social media analysis)
+   - News Analysis (news impact assessment)
+   - Fundamentals Analysis (financial metrics)
+
+2. **💭 Research Team Debate**
+   - Bull Researcher arguments (positive outlook)
+   - Bear Researcher arguments (negative outlook)
+   - Research Manager decision (balanced assessment)
+
+3. **📈 Trading Plan**
+   - Trader's investment strategy
+   - Entry/exit recommendations
+   - Risk considerations
+
+4. **⚖️ Risk Management**
+   - Multi-perspective risk analysis
+   - Risk mitigation strategies
+   - Final risk assessment
+
+5. **🏛️ Portfolio Management**
+   - Final BUY/SELL/HOLD decision
+   - Position sizing recommendations
+   - Overall portfolio impact
+
+### Decision Types
+- **🟢 BUY**: Strong positive signals, good entry opportunity
+- **🔴 SELL**: Strong negative signals, recommend exit
+- **🟡 HOLD**: Mixed signals, maintain current position
+- **📋 Other**: Custom decision with specific reasoning
+
+## 📁 File Organization
+
+All analyses are automatically saved:
+```
+analyses/
+├── AAPL_20240115_143022_analysis.txt
+├── TSLA_20240115_151045_analysis.txt
+└── SPY_20240116_092314_analysis.txt
+```
+
+## 🔧 Quick Troubleshooting
+
+### ChromaDB Issues
+- **GUI**: Click the `🔄 Reset` button
+- **CLI**: Restart the application
+- **Manual**: Delete any `chroma_db/` folders
+
+### API Errors
+- Verify API keys are set correctly
+- Check API rate limits
+- Try using lighter models (o4-mini, gpt-4o-mini)
+
+### Memory Issues
+- Reduce number of selected analysts
+- Lower debate rounds (1-2)
+- Use smaller models
+
+## 🎯 Recommended Configurations
+
+### **Quick Analysis** (Fast & Cost-Effective)
+- **Models**: o4-mini + gpt-4o-mini
+- **Analysts**: Market + News
+- **Debate Rounds**: 1
+- **Risk Rounds**: 1
+
+### **Comprehensive Analysis** (Thorough)
+- **Models**: gpt-4.1 + gpt-4o-mini
+- **Analysts**: All (Market, Social, News, Fundamentals)
+- **Debate Rounds**: 3
+- **Risk Rounds**: 2
+
+### **Research Focus** (Deep Analysis)
+- **Models**: o3 + gpt-4.1-mini
+- **Analysts**: All analysts
+- **Debate Rounds**: 5
+- **Risk Rounds**: 3
+
+## 📚 Next Steps
+
+1. **Explore History** → Use GUI History tab to review patterns
+2. **Try Different Tickers** → Compare analyses across sectors
+3. **Experiment with Models** → Test different LLM combinations
+4. **Review Documentation** → Check sections below for detailed guides
+5. **Join Community** → [Discord](https://discord.com/invite/hk9PGKShPK) | [GitHub](https://github.com/TauricResearch/)
+
+---
+
+# 🚀 TradingAgents GUI Setup Guide
+
+This guide will help you set up and run the beautiful Streamlit GUI for TradingAgents.
+
+## 📋 Prerequisites for GUI Setup
+
+You should have already:
+- ✅ Cloned the repository
+- ✅ Created a virtual environment
+- ✅ Set up all API keys
+- ✅ Python 3.10+ installed
+
+## 🛠️ Setup Steps
+
+### 1. Activate Your Virtual Environment
+
+Open your terminal/PowerShell in your project directory and activate your virtual environment:
+
+```bash
+# Navigate to your project directory
+cd TradingAgents
+
+# Activate your virtual environment
+# For conda:
+conda activate tradingagents
+
+# For venv on Windows:
+.\venv\Scripts\Activate.ps1
+
+# For venv on Linux/Mac:
+source venv/bin/activate
+```
+
+### 2. Install Streamlit
+
+Install the required Streamlit dependency:
+
+```bash
+pip install streamlit
+```
+
+Or install all requirements (which now includes Streamlit):
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Run the GUI
+
+You have two options:
+
+#### Option A: Use the Batch File (Windows - Easiest)
+Simply double-click `run_gui.bat` in the project folder.
+
+#### Option B: Run Manually
+```bash
+streamlit run streamlit_app.py
+```
+
+### 4. Access the GUI
+
+After running the command, you'll see output like:
+```
+Local URL: http://localhost:8501
+Network URL: http://192.168.1.100:8501
+```
+
+Open your web browser and go to `http://localhost:8501`
+
+## 🎯 How to Use the GUI
+
+### 1. Main Interface Tabs
+
+The GUI is organized into two main tabs:
+
+#### 🚀 New Analysis Tab
+This is where you run new stock analyses.
+
+#### 📚 History Tab
+View and explore all your previous analyses with detailed history management.
+
+### 2. Configuration (Sidebar)
+- **Models**: Choose from your available models (o4-mini, o3, gpt-4.1, etc.)
+- **Debate Rounds**: Set how many rounds of debate between bull/bear researchers
+- **Risk Rounds**: Set how many rounds of risk analysis discussion
+- **Online Tools**: Enable/disable real-time data fetching
+- **Analysts**: Select which analysts to include in the analysis
+
+### 3. Analysis Input (New Analysis Tab)
+- **Ticker Symbol**: Enter the stock symbol (e.g., AAPL, TSLA, SPY)
+- **Analysis Date**: Choose the date for analysis (usually today)
+- **Run Analysis**: Click the button to start the multi-agent analysis
+- **Reset**: Clear system state and reset ChromaDB for analyzing new stocks
+
+### 4. View Results (New Analysis Tab)
+The results are organized in 5 tabs:
+- **📊 Summary**: Executive summary and final decision
+- **🔍 Analyst Reports**: Individual analyst team reports
+- **💭 Research Debate**: Bull vs Bear arguments and manager decision
+- **📈 Trading Plan**: Trader's investment plan
+- **⚖️ Risk Analysis**: Risk management team analysis
+
+### 5. Analysis History (History Tab)
+
+**📊 Analysis Summary Table**
+- View all past analyses in a sortable table
+- See ticker, date, time, decision, and filename at a glance
+- Quick overview of trading decisions with color-coded indicators
+
+**🔍 Detailed Analysis Viewer**
+- Select any historical analysis from the dropdown
+- View complete analysis details in organized tabs:
+  - **📊 Summary**: Key metrics and final decision
+  - **🔍 Analyst Reports**: All team reports (Market, Social, News, Fundamentals)
+  - **💭 Research Debate**: Bull vs Bear arguments and manager decision
+  - **📈 Trading Plan**: Trading team recommendations
+  - **⚖️ Risk Analysis**: Risk management analysis
+  - **📄 Raw Data**: Full analysis file with download option
+
+**📥 Download Capability**
+- Download any analysis file for external use
+- Files are saved in standard text format with complete details
+- Perfect for sharing or further analysis
+
+### 6. Saved Reports
+All analysis results are automatically saved to the `.\analyses\` folder in `.txt` format with timestamps.
+
+## 🎨 GUI Features
+
+### Beautiful Interface
+- Modern, clean design with professional styling
+- Color-coded status indicators for each agent team
+- Organized tabs for easy navigation
+- Real-time progress tracking
+
+### Comprehensive Configuration
+- Easy model selection from your available models
+- Adjustable analysis parameters
+- Flexible analyst team selection
+- Online/offline mode toggle
+
+### Rich Results Display
+- Executive summary with clear BUY/SELL/HOLD indicators
+- Expandable sections for detailed reports
+- Color-coded analysis outputs
+- Automatic file saving with timestamps
+
+### Analysis History Management
+- Complete history of all analyses in one place
+- Sortable summary table with key information
+- Detailed viewer for any past analysis
+- Download individual analysis files
+- Easy comparison between different analyses
+
+### Agent Status Tracking
+- Visual representation of all agent teams
+- Real-time status updates (Pending → Running → Completed)
+- Team-based organization (Analyst, Research, Trading, Risk, Portfolio)
+
+### System Management
+- Built-in reset functionality for ChromaDB issues
+- Clear system status indicators
+- Session state management
+- Automatic cleanup and organization
+
+## 🔧 GUI Troubleshooting
+
+### Port Already in Use
+If port 8501 is busy, run with a different port:
+```bash
+streamlit run streamlit_app.py --server.port 8502
+```
+
+### Import Errors
+Make sure your virtual environment is activated and all dependencies are installed:
+```bash
+pip install -r requirements.txt
+```
+
+### API Key Issues
+Ensure all your API keys are properly set in your environment variables:
+- `OPENAI_API_KEY`
+- `FINNHUB_API_KEY`
+- Any other API keys required by your data sources
+
+### Memory Issues
+If you encounter memory issues with large analyses:
+- Try reducing the number of selected analysts
+- Reduce debate/risk discussion rounds
+- Use lighter models (like gpt-4o-mini)
+
+## 📁 GUI File Structure
+
+After setup, your project will have these key files:
+```
+TradingAgents/
+├── streamlit_app.py          # Main GUI application
+├── run_gui.bat              # Easy launcher for Windows
+├── analyses/                # Auto-generated analysis results
+│   ├── AAPL_20240115_143022_analysis.txt
+│   ├── TSLA_20240115_151045_analysis.txt
+│   └── SPY_20240116_092314_analysis.txt
+├── requirements.txt         # Updated with all dependencies
+└── ... (existing files)
+```
+
+## 🚀 Advanced GUI Usage
+
+### Custom Model Configuration
+You can easily switch between your available models:
+- **Deep Thinking Models**: For complex analysis (gpt-4.1, o3, o4-mini)
+- **Quick Thinking Models**: For rapid tool calls (gpt-4o-mini, gpt-4.1-nano)
+
+### Analysis Customization
+- **Minimal Analysis**: Select only Market Analyst, 1 debate round
+- **Comprehensive Analysis**: Select all analysts, 3-5 debate rounds
+- **Risk-Focused Analysis**: Include all risk analysts, increase risk rounds
+
+### History Management
+- **View Trends**: Compare decisions across time periods
+- **Export Data**: Download specific analyses for external tools
+- **Portfolio Review**: Track your analysis history for portfolio insights
+- **Research**: Use historical data for backtesting strategies
+
+### Batch Processing
+For multiple analyses, you can:
+1. Run one analysis and save results
+2. Use the History tab to review
+3. Switch back to New Analysis tab
+4. Change ticker symbol and run another analysis
+5. All results are automatically timestamped and organized
+
+**Pro Tips:**
+- Save your favorite configuration settings by noting them down
+- Use meaningful ticker symbols and check the analysis dates
+- Review all tabs for comprehensive insights
+- Use the History tab to track patterns in your trading decisions
+- Download analysis files for external tools or sharing
+- Use the Reset button if you encounter ChromaDB issues
+- Check the `analyses` folder for all saved reports
+
+**New History Features:**
+- 📊 **Quick Overview**: See all your analyses at a glance in the summary table
+- 🔍 **Deep Dive**: Select any analysis for detailed review with organized tabs
+- 📥 **Export**: Download any analysis file for external use
+- 📈 **Track Performance**: Monitor your trading decision patterns over time
+- 🔄 **Easy Navigation**: Switch seamlessly between new analysis and history review
+
+---
+
+# ChromaDB Reset Solution
+
+## Problem
+The TradingAgents application was experiencing ChromaDB connection issues after running the first analysis, with errors like:
+```
+❌ Analysis failed: Could not connect to tenant default_tenant. Are you sure it exists?
+```
+
+This required users to restart the entire application to analyze another stock.
+
+## Root Cause
+- ChromaDB was creating persistent storage files that remained locked after analysis completion
+- The ChromaDB client instances weren't being properly cleaned up between analyses
+- Persistent ChromaDB files in the `chroma_db/` directory were causing tenant connection conflicts
+
+## Solution Implemented
+
+### 1. Enhanced Memory Management (`tradingagents/agents/utils/memory.py`)
+
+**Key improvements:**
+- **In-memory first approach**: ChromaDB now defaults to in-memory storage (faster, no cleanup needed)
+- **Temporary directory fallback**: If in-memory fails, uses temporary directories that are properly tracked
+- **Robust reset functionality**: Added `reset()` method that properly cleans up ChromaDB instances
+- **Windows-friendly cleanup**: Handles Windows file locking issues with delayed cleanup at program exit
+- **Automatic garbage collection**: Forces garbage collection to release file handles before cleanup
+
+**New features:**
+```python
+# In-memory ChromaDB (preferred)
+settings = Settings(allow_reset=True, is_persistent=False)
+
+# Automatic cleanup at program exit
+atexit.register(_cleanup_at_exit)
+
+# Robust reset method
+def reset(self):
+    # Properly cleans up ChromaDB and reinitializes
+```
+
+### 2. TradingAgentsGraph Reset (`tradingagents/graph/trading_graph.py`)
+
+**Added reset functionality:**
+```python
+def reset(self):
+    """Reset all ChromaDB memories and clear internal state"""
+    # Resets all 5 memory instances (bull, bear, trader, invest_judge, risk_manager)
+    # Clears internal state (curr_state, ticker, log_states_dict)
+    # Handles failures gracefully with complete reinitialization
+```
+
+### 3. Streamlit UI Enhancement (`streamlit_app.py`)
+
+**New features:**
+- **🔄 Reset Button**: Added to the main UI for easy access
+- **System Status Display**: Shows current system state (agents ready, analysis complete, etc.)
+- **Session State Management**: Properly manages TradingAgentsGraph instances across sessions
+- **Persistent ChromaDB Cleanup**: Removes any leftover ChromaDB files
+
+**UI improvements:**
+```python
+# Reset button with helpful tooltip
+reset_button = st.button(
+    "🔄 Reset",
+    type="secondary",
+    help="Reset ChromaDB and clear system state for analyzing new stocks"
+)
+
+# Informative status messages
+if st.session_state.trading_graph is not None:
+    st.info("🤖 Agents initialized and ready for analysis")
+```
+
+### 4. Testing Infrastructure (`test_reset_functionality.py`)
+
+**Comprehensive testing:**
+- Tests individual memory reset functionality
+- Tests complete TradingAgentsGraph reset
+- Includes cleanup verification
+- Provides clear pass/fail feedback
+
+## How to Use ChromaDB Reset
+
+### Method 1: Using the Reset Button (Recommended)
+1. Run an analysis on any stock
+2. If you want to analyze another stock, click the **🔄 Reset** button
+3. The system will clean up ChromaDB and reinitialize everything
+4. You can now analyze any other stock without issues
+
+### Method 2: Programmatic Reset
+```python
+from tradingagents.graph.trading_graph import TradingAgentsGraph
+
+# Create and use trading graph
+ta = TradingAgentsGraph()
+final_state, decision = ta.propagate("AAPL", "2024-01-15")
+
+# Reset for next analysis
+ta.reset()
+final_state, decision = ta.propagate("TSLA", "2024-01-15")
+```
+
+### Method 3: Manual Cleanup
+```python
+from tradingagents.agents.utils.memory import cleanup_persistent_chromadb
+
+# Clean up any persistent ChromaDB files
+cleanup_persistent_chromadb()
+```
+
+## Technical Benefits
+
+1. **No More Application Restarts**: Users can analyze multiple stocks in a single session
+2. **Faster Performance**: In-memory ChromaDB is significantly faster than persistent storage
+3. **Robust Error Handling**: Graceful degradation and recovery from ChromaDB issues
+4. **Windows Compatible**: Handles Windows file locking issues properly
+5. **Memory Efficient**: Proper cleanup prevents memory leaks
+6. **User Friendly**: Clear UI feedback and simple reset functionality
+
+## Error Resolution
+
+**If you still experience ChromaDB issues:**
+
+1. Click the **🔄 Reset** button in the Streamlit UI
+2. If problems persist, restart the Streamlit application
+3. For development, run the test script: `python test_reset_functionality.py`
+4. Check for any remaining ChromaDB files and delete them manually if needed
+
+## Files Modified for ChromaDB Reset
+
+- `tradingagents/agents/utils/memory.py` - Enhanced memory management
+- `tradingagents/graph/trading_graph.py` - Added reset functionality
+- `streamlit_app.py` - Added reset button and UI improvements
+- `test_reset_functionality.py` - Added comprehensive testing
+
+## Future Improvements
+
+- [ ] Automatic reset on error detection
+- [ ] Configuration option to choose between in-memory and persistent storage
+- [ ] Background cleanup of temporary files
+- [ ] Integration with application logging for better diagnostics
+
+---
+
+# Changelog
+
+All notable changes to TradingAgents will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Version 0.2.0] - Latest Release
+
+### Added
+- 📚 **Analysis History Feature**: Complete history management system in Streamlit GUI
+  - Summary table showing all past analyses with sortable columns
+  - Detailed viewer for any historical analysis with organized tabs
+  - Download capability for individual analysis files
+  - Automatic parsing and organization of saved analysis files
+  
+- 🖥️ **Enhanced GUI Interface**: Major improvements to Streamlit web interface
+  - Two-tab main interface: "New Analysis" and "History"
+  - Professional styling with color-coded indicators
+  - Real-time progress tracking and agent status displays
+  - Session state management for better user experience
+  
+- 🔄 **System Reset Functionality**: Comprehensive ChromaDB reset capabilities
+  - Built-in reset button in GUI interface
+  - Programmatic reset methods for development use
+  - Automatic cleanup of persistent ChromaDB files
+  - Windows-friendly file handling and cleanup
+  
+- 📊 **Rich Analysis Display**: Enhanced result presentation
+  - Color-coded trading decisions (🟢 BUY, 🔴 SELL, 🟡 HOLD)
+  - Organized tab structure for different analysis sections
+  - Executive summary with key metrics
+  - Bull vs Bear argument visualization
+  
+- 🎛️ **Advanced Configuration Options**: Expanded customization capabilities
+  - Model selection for deep thinking and quick thinking LLMs
+  - Adjustable debate rounds and risk analysis parameters
+  - Flexible analyst team selection
+  - Online/offline data source toggle
+
+### Changed
+- 🔧 **Memory Management**: Improved ChromaDB handling
+  - Default to in-memory ChromaDB for better performance
+  - Robust cleanup mechanisms for persistent storage
+  - Enhanced error handling and recovery
+  
+- 📁 **File Organization**: Better structure for saved analyses
+  - Automatic timestamping with consistent filename format
+  - Organized storage in `analyses/` directory
+  - Comprehensive analysis reports with all sections included
+  
+- 🎨 **UI/UX Improvements**: Enhanced user interface design
+  - Modern, clean design with professional styling
+  - Consistent color schemes and branding
+  - Improved navigation and user flow
+  - Better feedback and status indicators
+
+### Fixed
+- 🐛 **ChromaDB Connection Issues**: Resolved persistent connection problems
+  - Fixed tenant connection errors between analyses
+  - Eliminated need to restart application for new analyses
+  - Proper cleanup of ChromaDB instances and file handles
+  
+- 💾 **Memory Leaks**: Improved resource management
+  - Proper garbage collection of ChromaDB resources
+  - Cleanup of temporary files and directories
+  - Session state management in Streamlit
+  
+- 🔧 **Windows Compatibility**: Enhanced Windows support
+  - Fixed file locking issues on Windows systems
+  - Proper handling of file paths and permissions
+  - Delayed cleanup for Windows file system constraints
+
+### Technical Details
+- Added `pandas` dependency for data table display
+- Added `re` (regex) for analysis file parsing
+- Enhanced error handling throughout the application
+- Improved session state management in Streamlit
+- Added comprehensive testing for reset functionality
+
+### Documentation
+- 📖 **Updated README.md**: Added GUI section with comprehensive feature overview
+- 📝 **Enhanced GUI_Setup_Guide.md**: Updated with new History features and usage instructions
+- 🔧 **CHROMADB_RESET_SOLUTION.md**: Complete documentation of reset functionality
+- 📋 **CHANGELOG.md**: New changelog file for tracking updates
+
+## [Version 0.1.0] - Initial Release
+
+### Initial Release Features
+- Multi-agent LLM trading framework
+- CLI interface for running analyses
+- Basic Streamlit GUI
+- ChromaDB integration for memory management
+- Comprehensive analysis pipeline with 5 agent teams
+- Support for multiple LLM models
+- Financial data integration with various APIs
+
+**Happy Trading! 📈**
+
+> **Disclaimer**: TradingAgents is for research purposes. Past performance does not guarantee future results. Not financial advice.
