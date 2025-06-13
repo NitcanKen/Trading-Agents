@@ -71,6 +71,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Proper handling of file paths and permissions
   - Delayed cleanup for Windows file system constraints
 
+- 📝 **Analyst Reports Rendering**: Fixed incomplete content display in the "Analyst Reports" tab of the History view
+  - Refined regex patterns in `parse_analysis_file` to capture entire section text
+  - Analyst reports now render fully with Markdown elements preserved
+
 ### Technical Details
 - Added `pandas` dependency for data table display
 - Added `re` (regex) for analysis file parsing

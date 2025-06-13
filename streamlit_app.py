@@ -601,16 +601,16 @@ def parse_analysis_file(filepath):
         
         # Extract main sections
         section_patterns = {
-            'market_analysis': r'--- Market Analysis ---\n(.*?)(?=---|===|$)',
-            'social_sentiment': r'--- Social Sentiment ---\n(.*?)(?=---|===|$)',
-            'news_analysis': r'--- News Analysis ---\n(.*?)(?=---|===|$)',
-            'fundamentals_analysis': r'--- Fundamentals Analysis ---\n(.*?)(?=---|===|$)',
-            'research_decision': r'=== RESEARCH TEAM DECISION ===\n(.*?)(?====|$)',
-            'trading_plan': r'=== TRADING TEAM PLAN ===\n(.*?)(?====|$)',
-            'final_decision': r'=== PORTFOLIO MANAGEMENT DECISION ===\n(.*?)(?====|$)',
+            'market_analysis': r'--- Market Analysis ---\r?\n(.*?)(?=\r?\n--- [A-Za-z]|===|$)',
+            'social_sentiment': r'--- Social Sentiment ---\r?\n(.*?)(?=\r?\n--- [A-Za-z]|===|$)',
+            'news_analysis': r'--- News Analysis ---\r?\n(.*?)(?=\r?\n--- [A-Za-z]|===|$)',
+            'fundamentals_analysis': r'--- Fundamentals Analysis ---\r?\n(.*?)(?=\r?\n--- [A-Za-z]|===|$)',
+            'research_decision': r'=== RESEARCH TEAM DECISION ===\n(.*?)(?===|$)',
+            'trading_plan': r'=== TRADING TEAM PLAN ===\n(.*?)(?===|$)',
+            'final_decision': r'=== PORTFOLIO MANAGEMENT DECISION ===\n(.*?)(?===|$)',
             'bull_arguments': r'Bull Arguments:\n(.*?)(?=Bear Arguments:|Research Manager|===|$)',
             'bear_arguments': r'Bear Arguments:\n(.*?)(?=Research Manager|===|$)',
-            'research_manager_decision': r'Research Manager Decision:\n(.*?)(?====|$)',
+            'research_manager_decision': r'Research Manager Decision:\n(.*?)(?===|$)',
             'risk_analysis': r'=== RISK ANALYSIS DETAILS ===\n(.*?)(?=$)'
         }
         
