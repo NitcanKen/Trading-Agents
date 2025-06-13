@@ -521,6 +521,25 @@ All notable changes to TradingAgents will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Version 0.2.1] - Market Analyst Upgrade
+
+### Added
+- 🔍 **Market Analyst Enhancements**
+  - Added new technical indicators: Bollinger Band Width (`bb_width`), Money Flow Index (`mfi`), Average Directional Index (`adx`).
+  - Integrated **Volume Profile** analysis via new tool `get_volume_profile_report`, providing POC/VAH/VAL and top volume clusters.
+  - Support for **multi-timeframe** (short / medium / long) trend evaluation.
+  - Prompt now generates ≥600-word narrative, actionable insights section, indicator summary table, and volume profile summary.
+- 🛠 **Toolkit & Dataflows**
+  - Implemented `get_volume_profile` data-flow helper that calculates volume profile from Yahoo Finance data (online/offline).
+  - Added `get_volume_profile_report` ToolNode in `Toolkit`, auto-detecting online mode.
+  - Extended `best_ind_params` with `bb_width` & `mfi` descriptions.
+
+### Changed
+- ⚙️ **Trading Graph**
+  - Registered `get_volume_profile_report` inside Market ToolNode so Market Analyst can access the new data source.
+- 📝 **Market Analyst Prompt**
+  - Expanded indicator whitelist, added ADX category, volume profile instructions, multi-time-frame guidance, and length requirement.
+
 ## [Version 0.2.0] - Latest Release
 
 ### Added

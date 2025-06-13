@@ -409,3 +409,26 @@ class Toolkit:
         )
 
         return openai_fundamentals_results
+
+    @staticmethod
+    @tool
+    def get_volume_profile_report(
+        symbol: Annotated[str, "ticker symbol of the company"],
+        curr_date: Annotated[str, "The current trading date you are trading on, YYYY-mm-dd"],
+        look_back_days: Annotated[int, "how many days of historical data to analyze"] = 120,
+        bins: Annotated[int, "number of price bins for volume aggregation"] = 20,
+    ) -> str:
+        """Generate a volume profile analysis for the specified stock.
+
+        Args:
+            symbol (str): ticker symbol, e.g. AAPL
+            curr_date (str): trade date in YYYY-mm-dd format
+            look_back_days (int): historical look-back window (default 120)
+            bins (int): number of price bins (default 20)
+        Returns:
+            str: Volume profile report containing POC / VAH / VAL and top clusters
+        """
+
+        # Use online/offline flag from config
+        online = Toolkit().config["online_tools"]
+        return interface.get_volume_profile(symbol, curr_date, look_back_days, bins, online)

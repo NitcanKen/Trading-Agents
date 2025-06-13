@@ -156,6 +156,7 @@ class TradingAgentsGraph:
                     # offline tools
                     self.toolkit.get_YFin_data,
                     self.toolkit.get_stockstats_indicators_report,
+                    self.toolkit.get_volume_profile_report,
                 ]
             ),
             "social": ToolNode(

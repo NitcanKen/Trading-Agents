@@ -36,15 +36,34 @@ MACD Related:
 
 Momentum Indicators:
 - rsi: RSI: Measures momentum to flag overbought/oversold conditions. Usage: Apply 70/30 thresholds and watch for divergence to signal reversals. Tips: In strong trends, RSI may remain extreme; always cross-check with trend analysis.
+- mfi: MFI: Uses both price and volume to measure buying/selling pressure. Usage: Overbought >80 / Oversold <20; divergence may signal reversals. Tips: Combine with RSI to filter false moves.
 
 Volatility Indicators:
 - boll: Bollinger Middle: A 20 SMA serving as the basis for Bollinger Bands. Usage: Acts as a dynamic benchmark for price movement. Tips: Combine with the upper and lower bands to effectively spot breakouts or reversals.
 - boll_ub: Bollinger Upper Band: Typically 2 standard deviations above the middle line. Usage: Signals potential overbought conditions and breakout zones. Tips: Confirm signals with other tools; prices may ride the band in strong trends.
 - boll_lb: Bollinger Lower Band: Typically 2 standard deviations below the middle line. Usage: Indicates potential oversold conditions. Tips: Use additional analysis to avoid false reversal signals.
+- bb_width: Bollinger Band Width: (UB-LB)/Middle quantifies volatility squeezes and expansions. Usage: Detects contraction before breakouts. Tips: Monitor sharp increases for potential big moves.
 - atr: ATR: Averages true range to measure volatility. Usage: Set stop-loss levels and adjust position sizes based on current market volatility. Tips: It's a reactive measure, so use it as part of a broader risk management strategy.
 
 Volume-Based Indicators:
 - vwma: VWMA: A moving average weighted by volume. Usage: Confirm trends by integrating price action with volume data. Tips: Watch for skewed results from volume spikes; use in combination with other volume analyses.
+
+Trend-Strength Indicators:
+- adx: ADX: Average Directional Index quantifies trend strength (>25 indicates trending market).
+
+Volume Profile (separate tool):
+- volume_profile: Call get_volume_profile_report to obtain Point of Control (POC), Value Area High/Low and top volume clusters.
+
+Additional Instructions:
+1. Adopt a multi-timeframe lens: analyze and explicitly discuss SHORT-TERM (≤20d), MEDIUM-TERM (≈50-90d), LONG-TERM (≈200d) trends.
+2. ALWAYS call get_volume_profile_report once data is downloaded, integrate its findings into the report.
+3. Your final answer must be **≥600 words** and contain:
+   • Narrative discussion (with numbered subsections)  
+   • An "Actionable Insights" section listing ≤5 bullet-point trade ideas  
+   • A Markdown table summarising all key indicators with columns: Indicator | Value | Threshold | Bias | Timeframe  
+   • A separate "Volume Profile Summary" subsection highlighting POC / VAH / VAL and support-resistance levels.
+
+4. Provide Short/Medium/Long trend verdicts (Up / Down / Sideways) at the start of the summary for quick reference.
 
 - Select indicators that provide diverse and complementary information. Avoid redundancy (e.g., do not select both rsi and stochrsi). Also briefly explain why they are suitable for the given market context. When you tool call, please use the exact name of the indicators provided above as they are defined parameters, otherwise your call will fail. Please make sure to call get_YFin_data first to retrieve the CSV that is needed to generate indicators. Write a very detailed and nuanced report of the trends you observe. Do not simply state the trends are mixed, provide detailed and finegrained analysis and insights that may help traders make decisions."""
             + """ Make sure to append a Markdown table at the end of the report to organize key points in the report, organized and easy to read."""

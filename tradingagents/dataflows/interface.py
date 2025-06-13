@@ -495,6 +495,11 @@ def get_stock_stats_indicators_window(
             "Usage: Confirm trends by integrating price action with volume data. "
             "Tips: Watch for skewed results from volume spikes; use in combination with other volume analyses."
         ),
+        "bb_width": (
+            "Bollinger Band Width (BBW): Calculated as (Upper Band - Lower Band) / Middle Band. "
+            "Usage: Quantifies volatility contractions / expansions; sharp increase in BBW often precedes breakouts. "
+            "Tips: Observe BBW squeezes to anticipate large moves; combine with momentum indicators for direction."
+        ),
         "mfi": (
             "MFI: The Money Flow Index is a momentum indicator that uses both price and volume to measure buying and selling pressure. "
             "Usage: Identify overbought (>80) or oversold (<20) conditions and confirm the strength of trends or reversals. "
@@ -802,3 +807,115 @@ def get_fundamentals_openai(ticker, curr_date):
     )
 
     return response.output[1].content[0].text
+
+
+def get_volume_profile(
+    symbol: Annotated[str, "ticker symbol of the company"],
+    curr_date: Annotated[str, "The current trading date you are trading on, YYYY-mm-dd"],
+    look_back_days: Annotated[int, "how many days of historical data to analyze"],
+    bins: Annotated[int, "number of price bins for volume aggregation"],
+    online: Annotated[bool, "to fetch data online or offline"],
+) -> str:
+    """Generate a simple volume-profile report for a stock.
+
+    Args:
+        symbol (str): ticker symbol, e.g. AAPL
+        curr_date (str): analysis date, YYYY-mm-dd
+        look_back_days (int): history window length (e.g. 120)
+        bins (int): number of equally-spaced price bins
+        online (bool): whether to pull fresh data from Yahoo Finance
+
+    Returns:
+        str: human-readable report containing POC, VAH, VAL and top volume clusters
+    """
+
+    import numpy as np
+
+    curr_dt = datetime.strptime(curr_date, "%Y-%m-%d")
+    start_dt = curr_dt - relativedelta(days=look_back_days)
+
+    if not online:
+        try:
+            data = pd.read_csv(
+                os.path.join(
+                    DATA_DIR,
+                    "market_data/price_data",
+                    f"{symbol}-YFin-data-2015-01-01-2025-03-25.csv",
+                )
+            )
+            data["Date"] = pd.to_datetime(data["Date"], utc=True)
+        except FileNotFoundError:
+            raise Exception("Volume profile failed: local Yahoo data not found. Please generate or switch to online mode.")
+    else:
+        data = yf.download(
+            symbol,
+            start=start_dt.strftime("%Y-%m-%d"),
+            end=curr_date,
+            progress=False,
+            auto_adjust=True,
+        ).reset_index()
+        if data.empty:
+            return "No price data available for volume profile."
+
+    # Filter window
+    mask = (data["Date"] >= start_dt) & (data["Date"] <= curr_dt)
+    window_df = data.loc[mask, ["Close", "Volume"]].dropna()
+    if window_df.empty:
+        return "No data in selected window for volume profile."
+
+    prices = window_df["Close"].values
+    vols = window_df["Volume"].values
+
+    # Bin by price
+    hist, bin_edges = np.histogram(prices, bins=bins, weights=vols)
+    # Sort bins by volume descending to find clusters
+    sorted_idx = np.argsort(hist)[::-1]
+
+    # POC
+    poc_idx = sorted_idx[0]
+    poc_price_low = bin_edges[poc_idx]
+    poc_price_high = bin_edges[poc_idx + 1]
+    poc_price = (poc_price_low + poc_price_high) / 2
+
+    # Value Area (70% volume around POC)
+    total_vol = hist.sum()
+    cumulative = hist[poc_idx]
+    lower_idx = upper_idx = poc_idx
+
+    # Expand outwards until >=70%
+    while cumulative / total_vol < 0.7:
+        next_lower = lower_idx - 1 if lower_idx > 0 else None
+        next_upper = upper_idx + 1 if upper_idx < len(hist) - 1 else None
+        # choose side with larger volume
+        if next_lower is None and next_upper is None:
+            break
+        add_lower = hist[next_lower] if next_lower is not None else 0
+        add_upper = hist[next_upper] if next_upper is not None else 0
+        if add_lower >= add_upper:
+            cumulative += add_lower
+            lower_idx = next_lower if next_lower is not None else lower_idx
+        else:
+            cumulative += add_upper
+            upper_idx = next_upper if next_upper is not None else upper_idx
+
+    vah_price = (bin_edges[upper_idx] + bin_edges[upper_idx + 1]) / 2
+    val_price = (bin_edges[lower_idx] + bin_edges[lower_idx + 1]) / 2
+
+    # Build report
+    clusters_report = ""
+    top_n = min(5, len(sorted_idx))
+    for rank in range(top_n):
+        idx = sorted_idx[rank]
+        low_p = bin_edges[idx]
+        high_p = bin_edges[idx + 1]
+        clusters_report += f"{rank+1}. {low_p:.2f}-{high_p:.2f}: {hist[idx]:,.0f} shares\n"
+
+    report = (
+        f"## Volume Profile for {symbol} ({start_dt.strftime('%Y-%m-%d')} – {curr_date})\n\n"
+        f"*Point of Control (POC)*: **{poc_price:.2f}**\n\n"
+        f"*Value Area High (VAH)*: **{vah_price:.2f}**\n\n"
+        f"*Value Area Low (VAL)*: **{val_price:.2f}**\n\n"
+        f"### Top Volume Clusters\n{clusters_report}"
+    )
+
+    return report
