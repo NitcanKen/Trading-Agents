@@ -539,6 +539,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 📝 **Market Analyst Prompt**
   - Expanded indicator whitelist, added ADX category, volume profile instructions, multi-time-frame guidance, and length requirement.
 
+## [Version 0.2.2] - Analyst Prompt Enhancements
+
+### Added
+- 📰 **News Analyst Upgrade**
+  - Rewrote system prompt to a structured, ≥600-word report with a single-line News Verdict and quantified `News Impact Score (NIS)`.
+  - Added macro, sector, and company-specific subsections, Risk Radar, Actionable Insights, and a "Key News Summary" markdown table.
+
+- 💼 **Fundamentals Analyst Upgrade**
+  - Introduced `Fundamentals Score (FS)` (0-100) and one-line Fundamentals Verdict.
+  - Prompt now covers valuation, growth, profitability, efficiency, liquidity/solvency, and insider/institutional activity in 8 numbered sections.
+  - Generates ≥600-word narrative plus "Key Fundamentals Summary" markdown table and Actionable Insights.
+
+### Changed
+- 📝 **Documentation**
+  - Updated analyst prompts to provide more consistent, research-grade outputs aligned with Market & Social analysts.
+
 ## [Version 0.2.0] - UI Release
 
 ### Added
