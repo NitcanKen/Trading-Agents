@@ -77,13 +77,12 @@ class StockstatsUtils:
             df["Date"] = df["Date"].dt.strftime("%Y-%m-%d")
             curr_date = curr_date.strftime("%Y-%m-%d")
 
-            # Custom implementation for Bollinger Band Width
+            # Custom implementation for Bollinger Band Width when using offline data
             if indicator == "bb_width":
-                # 先确保 Bollinger 相关列被计算
+                # Ensure Bollinger band related columns exist so that BBW can be derived
                 df["boll"]
                 df["boll_ub"]
                 df["boll_lb"]
-                # 计算 BBW = (Upper - Lower) / Middle
                 df["bb_width"] = (df["boll_ub"] - df["boll_lb"]) / df["boll"]
 
         df[indicator]  # trigger stockstats to calculate the indicator

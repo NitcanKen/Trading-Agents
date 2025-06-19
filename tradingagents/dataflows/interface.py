@@ -505,6 +505,12 @@ def get_stock_stats_indicators_window(
             "Usage: Identify overbought (>80) or oversold (<20) conditions and confirm the strength of trends or reversals. "
             "Tips: Use alongside RSI or MACD to confirm signals; divergence between price and MFI can indicate potential reversals."
         ),
+        # Trend-Strength Indicator
+        "adx": (
+            "ADX: Average Directional Index quantifies trend strength (values above 25 often indicate a strong trend). "
+            "Usage: Gauge whether a market is trending or ranging to adapt strategy (e.g., trend-following vs. mean-reversion). "
+            "Tips: Combine with DI+ / DI- or price action to determine trend direction; low ADX (<20) warns of choppy markets."
+        ),
     }
 
     if indicator not in best_ind_params:

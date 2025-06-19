@@ -41,7 +41,7 @@ Our framework decomposes complex trading tasks into specialized roles. This ensu
 - Fundamentals Analyst: Evaluates company financials and performance metrics, identifying intrinsic values and potential red flags.
 - Sentiment Analyst: Analyzes social media and public sentiment using sentiment scoring algorithms to gauge short-term market mood.
 - News Analyst: Monitors global news and macroeconomic indicators, interpreting the impact of events on market conditions.
-- Technical Analyst: Utilizes technical indicators (like MACD and RSI) to detect trading patterns and forecast price movements.
+- Technical Analyst: Utilizes technical indicators (like MACD, RSI, ADX, and Bollinger Band Width) to detect trading patterns and forecast price movements.
 
 <p align="center">
   <img src="assets/analyst.png" width="100%" style="display: inline-block; margin: 0 2%;">
@@ -521,7 +521,7 @@ All notable changes to TradingAgents will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Version 0.2.1] - Market Analyst Upgrade
+## [Version 0.2.2] - Market Analyst Upgrade
 
 ### Added
 - 🔍 **Market Analyst Enhancements**
@@ -539,11 +539,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 📝 **Market Analyst Prompt**
   - Expanded indicator whitelist, added ADX category, volume profile instructions, multi-time-frame guidance, and length requirement.
 
-## [Version 0.2.2] - Analyst Prompt Enhancements
+## [Version 0.2.1] - Analyst Prompt Enhancements
 
 ### Added
 - 📰 **News Analyst Upgrade**
-  - Rewrote system prompt to a structured, ≥600-word report with a single-line News Verdict and quantified `News Impact Score (NIS)`.
+  - Rewritten system prompt to a structured, ≥600-word report with a single-line News Verdict and quantified `News Impact Score (NIS)`.
   - Added macro, sector, and company-specific subsections, Risk Radar, Actionable Insights, and a "Key News Summary" markdown table.
 
 - 💼 **Fundamentals Analyst Upgrade**
