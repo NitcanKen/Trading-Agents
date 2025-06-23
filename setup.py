@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="tradingagents",
-    version="0.2.0",
+    version="0.2.3",
     description="Multi-Agents LLM Financial Trading Framework with GUI Interface",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",

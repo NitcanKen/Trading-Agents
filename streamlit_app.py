@@ -149,27 +149,100 @@ def create_config_sidebar():
     """Create the configuration sidebar"""
     st.sidebar.title("⚙️ Configuration")
     
-    # Model selection
-    available_models = [
-        "o4-mini", "o3", "o3-mini", "gpt-4.1", "gpt-4.1-mini", 
-        "gpt-4.1-nano", "gpt-4o", "gpt-4o-mini"
-    ]
+    # LLM Provider selection
+    st.sidebar.subheader("🤖 LLM Provider")
+    
+    # Available providers with their configurations
+    provider_configs = {
+        "OpenAI": {
+            "provider": "openai",
+            "backend_url": "https://api.openai.com/v1",
+            "models": ["o4-mini", "o3", "o3-mini", "gpt-4.1", "gpt-4.1-mini", 
+                      "gpt-4.1-nano", "gpt-4o", "gpt-4o-mini", "o1", "o1-mini"]
+        },
+        "Anthropic": {
+            "provider": "anthropic",
+            "backend_url": "https://api.anthropic.com/v1",
+            "models": ["claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022", 
+                      "claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307"]
+        },
+        "Google": {
+            "provider": "google",
+            "backend_url": "https://generativelanguage.googleapis.com/v1",
+            "models": ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash", 
+                      "gemini-1.0-pro"]
+        },
+        "Ollama": {
+            "provider": "ollama",
+            "backend_url": "http://localhost:11434/v1",
+            "models": ["llama3.2", "llama3.1", "llama2", "codellama", "mistral", "phi"]
+        },
+        "OpenRouter": {
+            "provider": "openrouter",
+            "backend_url": "https://openrouter.ai/api/v1",
+            "models": ["meta-llama/llama-3.2-3b-instruct", "meta-llama/llama-3.1-8b-instruct",
+                      "anthropic/claude-3.5-sonnet", "openai/gpt-4o", "google/gemini-2.5-flash", "google/gemini-2.0-flash"]
+        }
+    }
+    
+    selected_provider = st.sidebar.selectbox(
+        "Choose LLM Provider:",
+        list(provider_configs.keys()),
+        index=0,
+        help="Select the LLM provider for your analysis"
+    )
+    
+    # Get selected provider configuration
+    provider_config = provider_configs[selected_provider]
+    available_models = provider_config["models"]
+    
+    # Custom backend URL option
+    use_custom_url = st.sidebar.checkbox(
+        "Use Custom Backend URL",
+        value=False,
+        help="Override the default backend URL for the selected provider"
+    )
+    
+    if use_custom_url:
+        backend_url = st.sidebar.text_input(
+            "Backend URL:",
+            value=provider_config["backend_url"],
+            help="Enter custom backend URL for your LLM provider"
+        )
+    else:
+        backend_url = provider_config["backend_url"]
+    
+    # Model selection based on provider
+    default_deep_model = available_models[0] if available_models else "gpt-4o"
+    default_quick_model = available_models[-1] if len(available_models) > 1 else available_models[0]
     
     deep_think_model = st.sidebar.selectbox(
         "Deep Thinking Model:",
         available_models,
-        index=available_models.index("gpt-4.1"),
+        index=0 if default_deep_model in available_models else 0,
         help="Model used for complex analysis and decision making"
     )
     
     quick_think_model = st.sidebar.selectbox(
         "Quick Thinking Model:",
         available_models,
-        index=available_models.index("gpt-4o-mini"),
+        index=len(available_models)-1 if len(available_models) > 1 else 0,
         help="Model used for rapid analysis and tool calls"
     )
     
+    # Provider-specific warnings and information
+    if selected_provider == "Ollama":
+        st.sidebar.warning("⚠️ Make sure Ollama is running locally on port 11434")
+    elif selected_provider == "OpenRouter":
+        st.sidebar.info("💡 OpenRouter requires an API key. Set OPENROUTER_API_KEY in your environment")
+    elif selected_provider == "Google":
+        st.sidebar.info("💡 Google requires a GOOGLE_API_KEY in your environment")
+    elif selected_provider == "Anthropic":
+        st.sidebar.info("💡 Anthropic requires an ANTHROPIC_API_KEY in your environment")
+    
     # Analysis parameters
+    st.sidebar.subheader("🔧 Analysis Parameters")
+    
     max_debate_rounds = st.sidebar.slider(
         "Max Debate Rounds:",
         min_value=1,
@@ -204,6 +277,8 @@ def create_config_sidebar():
     selected_analysts = [k for k, v in analyst_options.items() if v]
     
     return {
+        "llm_provider": provider_config["provider"],
+        "backend_url": backend_url,
         "deep_think_llm": deep_think_model,
         "quick_think_llm": quick_think_model,
         "max_debate_rounds": max_debate_rounds,
@@ -279,6 +354,8 @@ def save_analysis_results(ticker, results, config):
 === TradingAgents Analysis Report ===
 Company: {ticker}
 Analysis Date: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+LLM Provider: {config.get('llm_provider', 'openai')}
+Backend URL: {config.get('backend_url', 'N/A')}
 Models Used: Deep={config['deep_think_llm']}, Quick={config['quick_think_llm']}
 Debate Rounds: {config['max_debate_rounds']}, Risk Rounds: {config['max_risk_discuss_rounds']}
 Online Tools: {config['online_tools']}
@@ -341,6 +418,8 @@ def run_analysis(ticker, trade_date, config):
         # Create config for TradingAgentsGraph
         ta_config = DEFAULT_CONFIG.copy()
         ta_config.update({
+            "llm_provider": config["llm_provider"],
+            "backend_url": config["backend_url"],
             "deep_think_llm": config["deep_think_llm"],
             "quick_think_llm": config["quick_think_llm"],
             "max_debate_rounds": config["max_debate_rounds"],
@@ -353,8 +432,12 @@ def run_analysis(ticker, trade_date, config):
         status_text = st.empty()
         
         # Initialize or reuse TradingAgentsGraph
-        if st.session_state.trading_graph is None:
-            status_text.text("🔧 Initializing agents...")
+        # Force reinitialization if provider config changed
+        if (st.session_state.trading_graph is None or 
+            getattr(st.session_state, 'current_provider', None) != config["llm_provider"] or
+            getattr(st.session_state, 'current_backend_url', None) != config["backend_url"]):
+            
+            status_text.text("🔧 Initializing agents with new provider...")
             progress_bar.progress(10)
             
             st.session_state.trading_graph = TradingAgentsGraph(
@@ -362,6 +445,10 @@ def run_analysis(ticker, trade_date, config):
                 debug=False,
                 config=ta_config
             )
+            
+            # Store current provider config
+            st.session_state.current_provider = config["llm_provider"]
+            st.session_state.current_backend_url = config["backend_url"]
         else:
             status_text.text("🔧 Using existing agents...")
             progress_bar.progress(10)
@@ -594,6 +681,15 @@ def parse_analysis_file(filepath):
             sections['company'] = header_match.group(1).strip()
             sections['analysis_date'] = header_match.group(2).strip()
         
+        # Extract LLM provider information
+        provider_match = re.search(r'LLM Provider: (.+?)\n', content)
+        if provider_match:
+            sections['llm_provider'] = provider_match.group(1).strip()
+        
+        backend_match = re.search(r'Backend URL: (.+?)\n', content)
+        if backend_match:
+            sections['backend_url'] = backend_match.group(1).strip()
+        
         # Extract models and config
         models_match = re.search(r'Models Used: (.+?)\n', content)
         if models_match:
@@ -677,13 +773,19 @@ def display_history_section():
                 return
             
             # Display header info
-            col1, col2, col3 = st.columns(3)
+            col1, col2, col3, col4 = st.columns(4)
             with col1:
                 st.metric("Company", parsed_data.get('company', 'N/A'))
             with col2:
                 st.metric("Analysis Date", parsed_data.get('analysis_date', 'N/A'))
             with col3:
+                st.metric("LLM Provider", parsed_data.get('llm_provider', 'N/A').upper())
+            with col4:
                 st.metric("Models Used", parsed_data.get('models', 'N/A'))
+            
+            # Show backend URL if available
+            if parsed_data.get('backend_url', 'N/A') != 'N/A':
+                st.info(f"🔗 Backend URL: {parsed_data['backend_url']}")
             
             # Create tabs for detailed sections
             detail_tabs = st.tabs([
@@ -855,6 +957,26 @@ def main():
         else:
             st.subheader("🔄 System Status")
             st.warning("⚡ System ready - agents will be initialized on first analysis")
+        
+        # Display current provider configuration
+        st.subheader("🤖 Current LLM Configuration")
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            st.metric("Provider", config["llm_provider"].upper())
+        
+        with col2:
+            st.metric("Deep Model", config["deep_think_llm"])
+        
+        with col3:
+            st.metric("Quick Model", config["quick_think_llm"])
+        
+        with col4:
+            # Truncate URL for display
+            display_url = config["backend_url"]
+            if len(display_url) > 30:
+                display_url = display_url[:27] + "..."
+            st.metric("Backend", display_url)
         
         # Display results
         if st.session_state.analysis_complete:

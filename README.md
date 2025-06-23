@@ -521,6 +521,50 @@ All notable changes to TradingAgents will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Version 0.2.3] - Multi-LLM Provider Support
+
+### Added
+- 🤖 **Multiple LLM Provider Selection**: Complete provider flexibility for both GUI and CLI
+  - Support for 5 major providers: OpenAI, Anthropic, Google, Ollama, OpenRouter  
+  - Dynamic model lists that update based on selected provider
+  - Provider-specific configuration with backend URLs and requirements
+  - Custom backend URL support for enterprise endpoints
+  
+- 🖥️ **Enhanced GUI Configuration**: Advanced provider management interface
+  - Provider dropdown with descriptions and requirements
+  - Real-time configuration display showing active provider and models
+  - Provider-specific warnings and setup instructions
+  - Smart agent reinitialization when provider changes
+  
+- ⚡ **Enhanced CLI Provider Selection**: Interactive provider configuration
+  - Step-by-step provider and model selection workflow
+  - Provider-specific model recommendations with descriptions
+  - Custom backend URL configuration option
+  - Comprehensive provider information display
+
+### Changed
+- 🔧 **Configuration Management**: Improved provider handling
+  - Extended configuration system to include provider and backend URL
+  - Enhanced analysis results to include provider information
+  - Updated historical analysis parsing to handle provider data
+  
+- 💾 **Analysis Storage**: Enhanced result tracking
+  - Analysis files now include LLM provider and backend URL information
+  - Historical analysis viewer displays provider details
+  - Backward compatibility with existing analysis files
+
+### Technical Details
+- Updated `streamlit_app.py` with comprehensive provider selection interface
+- Enhanced `cli/utils.py` with provider configuration functions  
+- Extended analysis result storage format to include provider metadata
+- Added provider-specific model validation and descriptions
+- Implemented smart reinitialization for provider changes
+
+### Documentation
+- 📖 **LLM_PROVIDER_GUIDE.md**: Comprehensive guide for provider selection and setup
+- Updated configuration examples and best practices
+- Provider-specific setup instructions and troubleshooting
+
 ## [Version 0.2.2] - Market Analyst Upgrade
 
 ### Added

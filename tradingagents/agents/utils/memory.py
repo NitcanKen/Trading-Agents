@@ -27,9 +27,10 @@ atexit.register(_cleanup_at_exit)
 
 
 class FinancialSituationMemory:
-    def __init__(self, name):
+    def __init__(self, name, config=None):
         self.client = OpenAI()
         self.collection_name = name
+        self.config = config or {}
         self.chroma_client = None
         self.situation_collection = None
         self.temp_dir = None
@@ -136,8 +137,12 @@ class FinancialSituationMemory:
 
     def __del__(self):
         """Cleanup when object is destroyed"""
-        if not self._use_in_memory:
-            self._cleanup_temp_dir()
+        try:
+            if hasattr(self, '_use_in_memory') and not self._use_in_memory:
+                self._cleanup_temp_dir()
+        except Exception:
+            # Ignore errors during cleanup to avoid showing error during object destruction
+            pass
 
     def get_embedding(self, text):
         """Get OpenAI embedding for a text"""
@@ -231,7 +236,8 @@ def cleanup_persistent_chromadb():
 
 if __name__ == "__main__":
     # Example usage
-    matcher = FinancialSituationMemory("test_memory")
+    example_config = {"backend_url": "https://api.openai.com/v1"}
+    matcher = FinancialSituationMemory("test_memory", example_config)
 
     # Example data
     example_data = [
