@@ -89,6 +89,22 @@ st.markdown("""
     .stExpander > div:first-child {
         background-color: #e9ecef;
     }
+    
+    .status-badge{padding:2px 6px;border-radius:4px;font-size:0.75em;font-weight:700}
+    .status-pending{background:#ffc107;color:#212529;}
+    .status-running{background:#0dcaf0;color:#fff;animation:pulse 1.5s infinite;}
+    .status-completed{background:#198754;color:#fff;}
+    @keyframes pulse{
+        0%{box-shadow:0 0 0 0 rgba(13,202,240,.6);}
+        70%{box-shadow:0 0 0 8px rgba(13,202,240,0);}
+        100%{box-shadow:0 0 0 0 rgba(13,202,240,0);}
+    }
+    /* ==== Card grid for agent status ==== */
+    .status-grid{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;}
+    .team-card{flex:1 1 calc(50% - 12px);background:#262730;border:1px solid #3a3f44;border-radius:8px;padding:8px;min-width:220px;color:#e0e0e0;}
+    .team-card h4{margin:0 0 6px 0;font-size:1rem;color:#ffffff;}
+    .team-card ul{list-style:none;margin:0;padding:0;}
+    .team-card li{margin:2px 0;color:#e0e0e0;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -99,6 +115,30 @@ if 'analysis_results' not in st.session_state:
     st.session_state.analysis_results = None
 if 'trading_graph' not in st.session_state:
     st.session_state.trading_graph = None
+
+# ====== 👇 NEW: 全局代理清单，用于初始化和显示 ======
+AGENT_TEAMS = {
+    "Analyst Team": [
+        "Market Analyst",
+        "Social Analyst",
+        "News Analyst",
+        "Fundamentals Analyst",
+    ],
+    "Research Team": ["Bull Researcher", "Bear Researcher", "Research Manager"],
+    "Trading Team": ["Trader"],
+    "Risk Management": ["Risky Analyst", "Neutral Analyst", "Safe Analyst"],
+    "Portfolio Management": ["Portfolio Manager"],
+}
+
+def _init_agent_status():
+    """
+    保证 st.session_state.agent_status 存在。
+    初始状态全部为 pending。
+    """
+    if "agent_status" not in st.session_state:
+        st.session_state.agent_status = {
+            agent: "pending" for agents in AGENT_TEAMS.values() for agent in agents
+        }
 
 def reset_system():
     """Reset ChromaDB and clear all system state"""
@@ -288,57 +328,18 @@ def create_config_sidebar():
     }
 
 def display_agent_status():
-    """Display the status of all agents"""
-    st.subheader("🔄 Agent Status")
-    
-    # Define agent teams and their members
-    teams = {
-        "Analyst Team": [
-            "Market Analyst",
-            "Social Analyst", 
-            "News Analyst",
-            "Fundamentals Analyst"
-        ],
-        "Research Team": [
-            "Bull Researcher",
-            "Bear Researcher",
-            "Research Manager"
-        ],
-        "Trading Team": [
-            "Trader"
-        ],
-        "Risk Management": [
-            "Risky Analyst",
-            "Neutral Analyst",
-            "Safe Analyst"
-        ],
-        "Portfolio Management": [
-            "Portfolio Manager"
-        ]
-    }
-    
-    # Create columns for teams
-    cols = st.columns(len(teams))
-    
-    for idx, (team_name, agents) in enumerate(teams.items()):
-        with cols[idx]:
-            st.markdown(f"**{team_name}**")
-            for agent in agents:
-                status = st.session_state.agent_status.get(agent, "pending")
-                status_class = f"status-{status}"
-                status_text = status.replace("_", " ").title()
-                
-                if status == "completed":
-                    emoji = "✅"
-                elif status == "running":
-                    emoji = "🔄"
-                else:
-                    emoji = "⏳"
-                
-                st.markdown(
-                    f'<div class="agent-status {status_class}">{emoji} {agent}: {status_text}</div>',
-                    unsafe_allow_html=True
-                )
+    """Return HTML string of status grid cards."""
+    _init_agent_status()
+    card_html_parts = ["<div class='status-grid'>"]
+    for team_name, agents in AGENT_TEAMS.items():
+        card_html_parts.append(f"<div class='team-card'><h4>{team_name}</h4><ul>")
+        for agent in agents:
+            status = st.session_state.agent_status.get(agent, "pending")
+            badge = f"<span class='status-badge status-{status}'>{status}</span>"
+            card_html_parts.append(f"<li>{agent} {badge}</li>")
+        card_html_parts.append("</ul></div>")
+    card_html_parts.append("</div>")
+    return "".join(card_html_parts)
 
 def save_analysis_results(ticker, results, config):
     """Save analysis results to the analyses folder"""
@@ -415,6 +416,10 @@ Risk Manager Decision:
 def run_analysis(ticker, trade_date, config):
     """Run the analysis synchronously with progress updates"""
     try:
+        _init_agent_status()                                 # <<<<<< NEW
+        status_placeholder = st.empty()                      # <<<<<< NEW
+        active_agent_banner = st.empty()  # << new banner placeholder
+
         # Create config for TradingAgentsGraph
         ta_config = DEFAULT_CONFIG.copy()
         ta_config.update({
@@ -437,6 +442,11 @@ def run_analysis(ticker, trade_date, config):
             getattr(st.session_state, 'current_provider', None) != config["llm_provider"] or
             getattr(st.session_state, 'current_backend_url', None) != config["backend_url"]):
             
+            # --- Phase 0: 初始化 --------------------------------------------------
+            for agent in st.session_state.agent_status:          # <<<<<< NEW
+                st.session_state.agent_status[agent] = "pending" # <<<<<< NEW
+            status_placeholder.markdown(display_agent_status(), unsafe_allow_html=True) # <<<<<< NEW
+            
             status_text.text("🔧 Initializing agents with new provider...")
             progress_bar.progress(10)
             
@@ -455,28 +465,121 @@ def run_analysis(ticker, trade_date, config):
         
         ta = st.session_state.trading_graph
         
-        # Run analysis
+        # --- Phase 1: 启动分析 -----------------------------------------------
+        for team in config["selected_analysts"]:
+            name = f"{team.capitalize()} Analyst"
+            st.session_state.agent_status[name] = "running"
+        status_placeholder.markdown(display_agent_status(), unsafe_allow_html=True)
+
+        # ---------------------- NEW: 流式执行并实时更新 ----------------------
         status_text.text("🚀 Running multi-agent analysis...")
         progress_bar.progress(30)
-        
-        final_state, decision = ta.propagate(ticker, trade_date)
-        
+
+        # Helper vars & funcs ------------------------------------------------
+        current_active_agent = None  # 用於標記當前正在運行的代理
+
+        def _switch_to(agent_name: str):
+            """Mark previous active agent completed, set new agent to running."""
+            nonlocal current_active_agent
+            if agent_name is None:
+                return
+            if current_active_agent and st.session_state.agent_status.get(current_active_agent) == "running":
+                st.session_state.agent_status[current_active_agent] = "completed"
+            if st.session_state.agent_status.get(agent_name) == "pending":
+                st.session_state.agent_status[agent_name] = "running"
+            current_active_agent = agent_name
+            status_placeholder.markdown(display_agent_status(), unsafe_allow_html=True)
+            active_agent_banner.markdown(f"**🏃 Now Running: {agent_name}**", unsafe_allow_html=True)
+
+        def _update_progress_bar():
+            total = len(st.session_state.agent_status)
+            completed = sum(1 for s in st.session_state.agent_status.values() if s == "completed")
+            pct = 30 + int(60 * completed / total)
+            progress_bar.progress(min(pct, 90))
+
+        # Initial state setup remains same
+        init_state = ta.propagator.create_initial_state(ticker, trade_date)
+        graph_args = ta.propagator.get_graph_args()
+        prev_state = init_state
+
+        for curr_state in ta.graph.stream(init_state, **graph_args):
+            try:
+                # ---- Analysts ----
+                if not prev_state.get("market_report") and curr_state.get("market_report"):
+                    _switch_to("Market Analyst")
+                elif not prev_state.get("sentiment_report") and curr_state.get("sentiment_report"):
+                    _switch_to("Social Analyst")
+                elif not prev_state.get("news_report") and curr_state.get("news_report"):
+                    _switch_to("News Analyst")
+                elif not prev_state.get("fundamentals_report") and curr_state.get("fundamentals_report"):
+                    _switch_to("Fundamentals Analyst")
+
+                # ---- Research Debate ----
+                prev_debate = prev_state.get("investment_debate_state", {})
+                curr_debate = curr_state.get("investment_debate_state", {})
+                if prev_debate.get("bull_history") != curr_debate.get("bull_history") and curr_debate.get("bull_history"):
+                    _switch_to("Bull Researcher")
+                elif prev_debate.get("bear_history") != curr_debate.get("bear_history") and curr_debate.get("bear_history"):
+                    _switch_to("Bear Researcher")
+                elif not prev_state.get("investment_plan") and curr_state.get("investment_plan"):
+                    _switch_to("Research Manager")
+
+                # ---- Trader ----
+                if not prev_state.get("trader_investment_plan") and curr_state.get("trader_investment_plan"):
+                    _switch_to("Trader")
+
+                # ---- Risk Debate ----
+                prev_risk = prev_state.get("risk_debate_state", {})
+                curr_risk = curr_state.get("risk_debate_state", {})
+                prev_speaker = prev_risk.get("latest_speaker", "")
+                curr_speaker = curr_risk.get("latest_speaker", "")
+                if curr_speaker and curr_speaker != prev_speaker:
+                    if curr_speaker.startswith("Risky"):
+                        _switch_to("Risky Analyst")
+                    elif curr_speaker.startswith("Safe"):
+                        _switch_to("Safe Analyst")
+                    elif curr_speaker.startswith("Neutral"):
+                        _switch_to("Neutral Analyst")
+                    elif curr_speaker.startswith("Judge"):
+                        _switch_to("Portfolio Manager")
+
+                # ---- Portfolio Manager (final decision) ----
+                if not prev_state.get("final_trade_decision") and curr_state.get("final_trade_decision"):
+                    _switch_to("Portfolio Manager")
+
+            except Exception:
+                pass
+
+            _update_progress_bar()
+            prev_state = curr_state
+
+        # 流式执行结束，curr_state 为最终状态
+        final_state = prev_state
+
+        # -------------------------------------------------------------------
+        # --- Phase 2: 标记全部完成 -------------------------------------------
+        for agent in st.session_state.agent_status:
+            st.session_state.agent_status[agent] = "completed"
+        status_placeholder.markdown(display_agent_status(), unsafe_allow_html=True)
         progress_bar.progress(90)
         status_text.text("💾 Saving results...")
-        
+
         # Save results to file
         saved_file = save_analysis_results(ticker, final_state, config)
-        
+
         progress_bar.progress(100)
         status_text.text("✅ Analysis Complete!")
-        
+
         # Store results in session state
         st.session_state.analysis_results = final_state
         st.session_state.analysis_complete = True
         st.session_state.saved_file = saved_file
-        
+
+        # after loop ends and final_state is set
+        active_agent_banner.empty()
+
         return True, None
-        
+
     except Exception as e:
         return False, str(e)
 
@@ -960,7 +1063,7 @@ def main():
         
         # Display current provider configuration
         st.subheader("🤖 Current LLM Configuration")
-        col1, col2, col3, col4 = st.columns(4)
+        col1, col2, col3 = st.columns(3)
         
         with col1:
             st.metric("Provider", config["llm_provider"].upper())
@@ -970,13 +1073,6 @@ def main():
         
         with col3:
             st.metric("Quick Model", config["quick_think_llm"])
-        
-        with col4:
-            # Truncate URL for display
-            display_url = config["backend_url"]
-            if len(display_url) > 30:
-                display_url = display_url[:27] + "..."
-            st.metric("Backend", display_url)
         
         # Display results
         if st.session_state.analysis_complete:

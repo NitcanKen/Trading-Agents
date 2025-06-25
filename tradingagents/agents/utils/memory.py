@@ -85,18 +85,28 @@ class FinancialSituationMemory:
     def _cleanup_temp_dir(self):
         """Clean up temporary directory with Windows-friendly approach"""
         if self.temp_dir and os.path.exists(self.temp_dir):
+            import stat, time
+
+            def _on_rm_error(func, path, exc_info):
+                """Error handler for shutil.rmtree to handle read-only files."""
+                try:
+                    os.chmod(path, stat.S_IWRITE)
+                    func(path)
+                except Exception:
+                    pass  # Swallow further errors
+
             try:
                 # Force garbage collection to release any file handles
                 gc.collect()
-                
-                # Try immediate cleanup
-                shutil.rmtree(self.temp_dir)
+                # Small delay to give OS time to release locks on Windows
+                time.sleep(0.05)
+                # Try immediate cleanup with robust handler
+                shutil.rmtree(self.temp_dir, onerror=_on_rm_error)
                 if self.temp_dir in _temp_dirs_to_cleanup:
                     _temp_dirs_to_cleanup.remove(self.temp_dir)
                 self.temp_dir = None
-            except Exception as e:
-                # On Windows, files might be locked, so we'll leave it for exit cleanup
-                logging.warning(f"Delayed cleanup scheduled for temp directory: {self.temp_dir}")
+            except Exception:
+                logging.debug(f"Delayed cleanup scheduled for temp directory: {self.temp_dir}")
 
     def reset(self):
         """Reset the ChromaDB client and collection"""

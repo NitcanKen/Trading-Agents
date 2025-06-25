@@ -521,6 +521,17 @@ All notable changes to TradingAgents will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Version 0.2.4] - 2025-06-25
+
+### Added
+- 🏃 **Real-Time Agent Status Tracking**: GUI now shows `running`, `pending`, and `completed` states per agent with animated pulse badges.
+- 🎨 **Card-Style Status Grid**: Replaced legacy table with responsive two-column card layout; dark-theme friendly.
+- 🏷️ **Active Agent Banner**: Banner under progress bar dynamically displays the agent currently executing.
+
+### Changed
+- 🔄 **Streamlit `run_analysis()`**: Switched to LangGraph `stream()` execution loop enabling frame-by-frame UI updates and more accurate progress bar.
+- 📊 **Progress Calculation**: Progress bar now maps completion ratio linearly (30-90 %) and finalizes at 100 % after save.
+
 ## [Version 0.2.3] - Multi-LLM Provider Support
 
 ### Added
